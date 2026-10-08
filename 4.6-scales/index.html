@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>4.6 D3 Scaling Charts</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <a href="../index.html">COS30045 Week 4 Lab</a>
+      <span class="crumb">Exercise 4.6 · Scaling charts</span>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <h1>Television models registered per brand, Australia 2026</h1>
+    <p class="lede">
+      Brands with at least 20 models that are available and sold in Australia. Samsung, Kogan and LG
+      alone account for 60% of the 4,240 models &mdash; more than the other 22 brands combined. Kogan, an
+      Australian brand, is highlighted.
+    </p>
+
+    <div class="responsive-svg-container"></div>
+
+    <p class="source">
+      Source: Energy Rating data for household appliances — televisions, data.gov.au
+      (<code>tv_2026_02_15.csv</code>), processed in KNIME.
+    </p>
+
+    <h2>How the scales work</h2>
+    <ul class="task-list">
+      <li><b>Linear scale</b> for <code>count</code> (continuous): maps 0 → the largest count onto
+          0 → 900 SVG units, so the longest bar always fits.</li>
+      <li><b>Band scale</b> for <code>brand</code> (categorical): splits 740 units of height into one
+          equal band per brand.</li>
+      <li><b>Padding</b> of 0.2 leaves a 20% gap between bands, so the bars stay visibly separate.</li>
+    </ul>
+  </main>
+
+  <script src="../js/vendor/d3.v7.min.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

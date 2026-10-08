@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>4.4 Load Data from CSV</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <a href="../index.html">COS30045 Week 4 Lab</a>
+      <span class="crumb">Exercise 4.4 · Load data from CSV</span>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <h1>Television brands in Australia</h1>
+    <p class="lede">
+      <code>tvBrandCount.csv</code> comes from the KNIME workflow in <code>knime/2026 TV Data.knwf</code>:
+      one row per brand, with <code>brand</code> as the category column and <code>count</code> as the number
+      of television models that brand has registered, available and sold in Australia.
+    </p>
+    <p class="note">
+      Open the browser console (F12 → Console) to see the JavaScript objects D3 builds from the file.
+      The tables below are filled by the same code, so the results are visible without the console too.
+    </p>
+
+    <h2>What D3 found</h2>
+    <table class="summary" id="stats">
+      <thead><tr><th scope="col">Measure</th><th scope="col">Value</th><th scope="col">D3 function</th></tr></thead>
+      <tbody></tbody>
+    </table>
+
+    <h2>Rows after conversion, sorted by count</h2>
+    <p class="note" id="type-check"></p>
+    <table class="summary" id="rows">
+      <thead><tr><th scope="col">#</th><th scope="col">brand</th><th scope="col">count</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </main>
+
+  <script src="../js/vendor/d3.v7.min.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

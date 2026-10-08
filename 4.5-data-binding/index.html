@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>4.5 D3 Binding and Drawing with Data</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <a href="../index.html">COS30045 Week 4 Lab</a>
+      <span class="crumb">Exercise 4.5 · Binding and drawing with data</span>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <h1>Television models registered per brand</h1>
+    <p class="lede">
+      One rectangle per row of <code>tvBrandCount.csv</code>, created by binding the data to the DOM.
+      Each bar's width is the brand's raw model count, with no scale yet, so the bars are measured in
+      SVG units: Samsung's 1,096 models make a bar 1,096 units long in a 1,200-unit-wide SVG. Kogan,
+      an Australian brand, is highlighted.
+    </p>
+
+    <div class="responsive-svg-container"></div>
+
+    <p class="note">
+      No labels or scale yet. A brand with more than 1,200 models would run off the edge of the SVG,
+      and that is the problem Exercise 4.6 fixes with scales.
+    </p>
+  </main>
+
+  <script src="../js/vendor/d3.v7.min.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
