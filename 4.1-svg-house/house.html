@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>4.1 Customised SVG House</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    .controls { margin: 0.5rem 0 0.75rem; }
+    .controls button {
+      font: inherit; padding: 0.45rem 0.9rem; border-radius: 6px; cursor: pointer;
+      border: 1px solid #1f6f8b; background: #fff; color: #1f6f8b; font-weight: 600;
+    }
+    .controls button[aria-pressed="true"] { background: #1f6f8b; color: #fff; }
+    #house { display: block; width: 100%; max-width: 1000px; height: auto; border: 1px solid #ccc; }
+    table.summary td:first-child { white-space: nowrap; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <a href="../index.html">COS30045 Week 4 Lab</a>
+      <span class="crumb">Exercise 4.1 · Customised drawing</span>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <h1>Exercise 4.1 — Customised SVG house and garden</h1>
+    <p class="lede">
+      The <a href="initial.html">initial drawing</a>, rebuilt and extended by hand. Turn on the
+      coordinates to see where a sample of the shapes sit in the SVG's coordinate system: the
+      origin (0,&nbsp;0) is the top-left corner, x grows to the right and y grows <em>downwards</em>.
+      The drawing uses a <code>viewBox</code> of <code>0 0 1000 750</code>, so every number below is in
+      those units, whatever size the page is.
+    </p>
+
+    <div class="controls">
+      <button id="toggle-ann" type="button" aria-pressed="false">Show coordinates</button>
+    </div>
+
+    <svg id="house" viewBox="0 0 1000 750" role="img" aria-labelledby="house-title">
+      <title id="house-title">A house and garden: brick house with a red roof and smoking chimney,
+        a fruit tree, a mailbox, flowers, a winding path, a picket fence, clouds, birds and a sun.</title>
+
+      <style>
+        .wall       { fill: #e2b07a; stroke: #9a6a3d; stroke-width: 4; }
+        .roof       { fill: #9b2f22; }
+        .roof-trim  { fill: none; stroke: #6e1f16; stroke-width: 6; stroke-linejoin: round; }
+        .chimney    { fill: #8a3b2a; }
+        .smoke      { fill: none; stroke: #c3ccd5; stroke-width: 9; stroke-linecap: round; opacity: 0.85; }
+        .glass      { fill: #bfe3f5; stroke: #5b4636; stroke-width: 4; }
+        .mullion    { stroke: #5b4636; stroke-width: 3; }
+        .sill       { fill: #f4efe6; }
+        .door       { fill: #5b3a1e; }
+        .door-panel { fill: none; stroke: #7a5230; stroke-width: 3; }
+        .trunk      { fill: #8b5a2b; }
+        .leaf       { fill: #2e8b3a; }
+        .apple      { fill: #d62828; }
+        .rail       { fill: #e9e9e2; stroke: #b8b8b0; stroke-width: 2; }
+        .picket     { fill: #fbfbf8; stroke: #b8b8b0; stroke-width: 2; }
+        .bird       { fill: none; stroke: #2b2b2b; stroke-width: 3; stroke-linecap: round; }
+        .label      { font-family: Georgia, "Times New Roman", serif; font-style: italic; font-size: 34px;
+                      fill: #1d2733; paint-order: stroke; stroke: #ffffff; stroke-width: 6px; }
+        .house-no   { font-family: sans-serif; font-weight: 700; font-size: 18px; fill: #f4d58d; text-anchor: middle; }
+
+        /* Coordinate annotations (hidden until the button is pressed) */
+        .ann-dot  { fill: #e6007e; stroke: #ffffff; stroke-width: 2; }
+        .ann-text { font-family: ui-monospace, Consolas, monospace; font-size: 15px; fill: #1d2733;
+                    paint-order: stroke; stroke: #ffffff; stroke-width: 5px; stroke-linejoin: round; }
+        .ann-line { stroke: #e6007e; stroke-width: 2; stroke-dasharray: 6 4; fill: none; }
+        .ann-axis { stroke: #e6007e; stroke-width: 3; }
+      </style>
+
+      <defs>
+        <!-- Styling: gradients for the sky and the lawn -->
+        <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#6fb7e8" />
+          <stop offset="1" stop-color="#d2ecf9" />
+        </linearGradient>
+        <linearGradient id="grass" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#5fae4b" />
+          <stop offset="1" stop-color="#3d8b37" />
+        </linearGradient>
+        <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+          <path d="M0,0 L10,5 L0,10 Z" fill="#e6007e" />
+        </marker>
+
+        <!-- Reusable parts: each is drawn once at (0,0) and placed with <use> + transform -->
+        <line id="ray" x1="68" y1="0" x2="98" y2="0" stroke="#ffcc00" stroke-width="6" stroke-linecap="round" />
+
+        <g id="cloud" fill="#ffffff" opacity="0.92">
+          <ellipse cx="0" cy="0" rx="60" ry="30" />
+          <ellipse cx="45" cy="-18" rx="45" ry="32" />
+          <ellipse cx="-45" cy="-4" rx="40" ry="24" />
+          <ellipse cx="88" cy="4" rx="36" ry="22" />
+        </g>
+
+        <path id="bird" class="bird" d="M0,0 q12,-12 24,0 q12,-12 24,0" />
+
+        <g id="window">
+          <rect class="glass" x="0" y="0" width="90" height="80" />
+          <line class="mullion" x1="45" y1="0" x2="45" y2="80" />
+          <line class="mullion" x1="0" y1="40" x2="90" y2="40" />
+          <rect class="sill" x="-6" y="80" width="102" height="8" />
+        </g>
+
+        <!-- Five petals: one ellipse rotated 72 degrees at a time. Petal colour comes from the
+             'color' set on each <use>, through fill="currentColor". -->
+        <g id="flower">
+          <line x1="0" y1="0" x2="0" y2="30" stroke="#2f7d32" stroke-width="3" />
+          <g fill="currentColor">
+            <ellipse cx="0" cy="-11" rx="6" ry="11" />
+            <ellipse cx="0" cy="-11" rx="6" ry="11" transform="rotate(72)" />
+            <ellipse cx="0" cy="-11" rx="6" ry="11" transform="rotate(144)" />
+            <ellipse cx="0" cy="-11" rx="6" ry="11" transform="rotate(216)" />
+            <ellipse cx="0" cy="-11" rx="6" ry="11" transform="rotate(288)" />
+          </g>
+          <circle r="5" fill="#ffd23f" />
+        </g>
+
+        <path id="picket" class="picket" d="M0,0 L11,-14 L22,0 L22,80 L0,80 Z" />
+      </defs>
+
+      <!-- ===== Background ===== -->
+      <rect x="0" y="0" width="1000" height="480" fill="url(#sky)" />
+
+      <!-- Sun: a group moved to (860,110); its 12 rays are one <line> rotated 30 degrees each time -->
+      <g id="sun" transform="translate(860,110)">
+        <use href="#ray" transform="rotate(0)" />
+        <use href="#ray" transform="rotate(30)" />
+        <use href="#ray" transform="rotate(60)" />
+        <use href="#ray" transform="rotate(90)" />
+        <use href="#ray" transform="rotate(120)" />
+        <use href="#ray" transform="rotate(150)" />
+        <use href="#ray" transform="rotate(180)" />
+        <use href="#ray" transform="rotate(210)" />
+        <use href="#ray" transform="rotate(240)" />
+        <use href="#ray" transform="rotate(270)" />
+        <use href="#ray" transform="rotate(300)" />
+        <use href="#ray" transform="rotate(330)" />
+        <circle r="55" fill="#ffd23f" />
+      </g>
+
+      <!-- Clouds and birds: the same shape reused at different positions and sizes -->
+      <use href="#cloud" transform="translate(170,95)" />
+      <use href="#cloud" transform="translate(575,70) scale(0.75)" />
+      <use href="#bird" transform="translate(390,130)" />
+      <use href="#bird" transform="translate(440,105) scale(0.7)" />
+
+      <!-- Rolling hills: cubic Bezier paths -->
+      <path d="M0,480 C110,395 260,405 380,480 Z" fill="#7cc06a" />
+      <path d="M620,480 C760,390 900,400 1000,438 L1000,480 Z" fill="#7cc06a" />
+
+      <rect x="0" y="480" width="1000" height="270" fill="url(#grass)" />
+
+      <!-- ===== Tree: a group whose local origin is moved to x = 150 ===== -->
+      <g id="tree" transform="translate(150,0)">
+        <rect class="trunk" x="-18" y="400" width="36" height="215" />
+        <circle class="leaf" cx="-42" cy="372" r="52" />
+        <circle class="leaf" cx="42" cy="372" r="52" />
+        <circle class="leaf" cx="0" cy="318" r="60" />
+        <circle class="leaf" cx="0" cy="405" r="48" />
+        <circle class="apple" cx="-32" cy="352" r="7" />
+        <circle class="apple" cx="27" cy="388" r="7" />
+        <circle class="apple" cx="10" cy="326" r="7" />
+        <circle class="apple" cx="-12" cy="414" r="7" />
+      </g>
+
+      <!-- ===== House ===== -->
+      <g id="building">
+        <!-- Chimney is drawn first so the roof covers its base -->
+        <rect class="chimney" x="610" y="225" width="42" height="110" />
+        <path class="smoke" d="M631,212 C611,187 651,167 631,142 C611,117 651,97 631,72" />
+
+        <rect class="wall" x="300" y="360" width="400" height="290" />
+        <path class="roof" d="M276,362 L500,200 L724,362 Z" />
+        <path class="roof-trim" d="M276,362 L500,200 L724,362" />
+
+        <!-- Round attic window -->
+        <circle class="glass" cx="500" cy="300" r="28" />
+        <line class="mullion" x1="472" y1="300" x2="528" y2="300" />
+        <line class="mullion" x1="500" y1="272" x2="500" y2="328" />
+
+        <!-- Two windows: one definition, placed twice -->
+        <use href="#window" transform="translate(340,400)" />
+        <use href="#window" transform="translate(570,400)" />
+
+        <!-- Door with panels, a house number and a knob -->
+        <rect class="door" x="455" y="500" width="90" height="150" rx="8" />
+        <rect class="door-panel" x="470" y="550" width="60" height="38" rx="3" />
+        <rect class="door-panel" x="470" y="598" width="60" height="38" rx="3" />
+        <text class="house-no" x="500" y="535">12</text>
+        <circle cx="530" cy="575" r="6" fill="#f4d58d" />
+
+        <!-- Doorstep -->
+        <rect x="440" y="650" width="120" height="12" fill="#9aa4ad" />
+      </g>
+
+      <!-- ===== Garden ===== -->
+      <!-- Winding path: one closed shape with two cubic Bezier edges -->
+      <path d="M455,662 L545,662 C580,690 640,705 690,750 L330,750 C380,705 420,690 455,662 Z" fill="#d8c3a0" />
+      <ellipse cx="500" cy="682" rx="26" ry="7" fill="#b9a27c" />
+      <ellipse cx="496" cy="707" rx="32" ry="9" fill="#b9a27c" />
+      <ellipse cx="503" cy="734" rx="38" ry="10" fill="#b9a27c" />
+
+      <!-- Flowers: one definition, recoloured and resized with each <use> -->
+      <use href="#flower" transform="translate(318,700)" style="color:#e84a5f" />
+      <use href="#flower" transform="translate(352,686) scale(0.85)" style="color:#f7b32b" />
+      <use href="#flower" transform="translate(300,728) scale(0.9)" style="color:#9b5de5" />
+      <use href="#flower" transform="translate(672,688)" style="color:#9b5de5" />
+      <use href="#flower" transform="translate(704,712) scale(0.85)" style="color:#e84a5f" />
+
+      <!-- Mailbox: rounded top drawn with an arc (A) command -->
+      <rect x="250" y="612" width="12" height="62" fill="#6b4a2b" />
+      <path d="M232,615 L232,598 A24,14 0 0 1 280,598 L280,615 Z" fill="#2f5d8a" />
+      <rect x="280" y="590" width="4" height="24" fill="#444444" />
+      <rect x="284" y="590" width="16" height="10" fill="#d62828" />
+
+      <!-- Picket fence: rails behind, then one picket shape placed every 32 units -->
+      <rect class="rail" x="725" y="575" width="270" height="10" />
+      <rect class="rail" x="725" y="612" width="270" height="10" />
+      <use href="#picket" transform="translate(730,560)" />
+      <use href="#picket" transform="translate(762,560)" />
+      <use href="#picket" transform="translate(794,560)" />
+      <use href="#picket" transform="translate(826,560)" />
+      <use href="#picket" transform="translate(858,560)" />
+      <use href="#picket" transform="translate(890,560)" />
+      <use href="#picket" transform="translate(922,560)" />
+      <use href="#picket" transform="translate(954,560)" />
+
+      <text class="label" x="848" y="528" text-anchor="middle" font-size="30">Home sweet home</text>
+
+      <!-- ===== Coordinate annotations ===== -->
+      <g id="annotations" style="display:none">
+        <!-- Origin and axis directions -->
+        <line class="ann-axis" x1="4" y1="4" x2="140" y2="4" marker-end="url(#arrow)" />
+        <line class="ann-axis" x1="4" y1="4" x2="4" y2="140" marker-end="url(#arrow)" />
+        <circle class="ann-dot" cx="4" cy="4" r="6" />
+        <text class="ann-text" x="18" y="32">origin (0,0)</text>
+        <text class="ann-text" x="150" y="10">x</text>
+        <text class="ann-text" x="12" y="160">y</text>
+
+        <!-- Cloud: group placed with translate -->
+        <circle class="ann-dot" cx="170" cy="95" r="6" />
+        <text class="ann-text" x="90" y="150">use #cloud translate(170,95)</text>
+
+        <!-- Sun -->
+        <circle class="ann-dot" cx="860" cy="110" r="6" />
+        <text class="ann-text" x="860" y="238" text-anchor="middle">sun: g translate(860,110)</text>
+        <text class="ann-text" x="860" y="258" text-anchor="middle">r=55 · rays rotate(30°·n)</text>
+
+        <!-- Roof path vertices -->
+        <circle class="ann-dot" cx="500" cy="200" r="6" />
+        <text class="ann-text" x="500" y="184" text-anchor="middle">L500,200</text>
+        <circle class="ann-dot" cx="276" cy="362" r="6" />
+        <text class="ann-text" x="268" y="350" text-anchor="end">roof path M276,362</text>
+        <circle class="ann-dot" cx="724" cy="362" r="6" />
+        <text class="ann-text" x="732" y="352">L724,362 Z</text>
+
+        <!-- Wall rectangle -->
+        <text class="ann-text" x="308" y="386">rect x=300 y=360 · 400×290</text>
+
+        <!-- Second window: reused group -->
+        <circle class="ann-dot" cx="570" cy="400" r="6" />
+        <line class="ann-line" x1="576" y1="402" x2="706" y2="426" />
+        <text class="ann-text" x="712" y="432">use #window translate(570,400)</text>
+
+        <!-- Door -->
+        <circle class="ann-dot" cx="455" cy="500" r="6" />
+        <text class="ann-text" x="447" y="520" text-anchor="end">door rect (455,500) rx=8</text>
+
+        <!-- Mailbox arc -->
+        <circle class="ann-dot" cx="256" cy="584" r="6" />
+        <text class="ann-text" x="240" y="572" text-anchor="end">arc A24,14</text>
+
+        <!-- Tree group -->
+        <circle class="ann-dot" cx="132" cy="400" r="6" />
+        <line class="ann-line" x1="130" y1="406" x2="70" y2="672" />
+        <text class="ann-text" x="20" y="690">tree: g translate(150,0)</text>
+        <text class="ann-text" x="20" y="710">trunk x=-18 → screen x 132</text>
+
+        <!-- Fence -->
+        <circle class="ann-dot" cx="730" cy="560" r="6" />
+        <line class="ann-line" x1="730" y1="566" x2="736" y2="650" />
+        <text class="ann-text" x="740" y="664">use #picket</text>
+        <text class="ann-text" x="740" y="682">translate(730+32n, 560)</text>
+
+        <!-- Garden path control points -->
+        <line class="ann-line" x1="545" y1="662" x2="580" y2="690" />
+        <line class="ann-line" x1="640" y1="705" x2="690" y2="750" />
+        <circle class="ann-dot" cx="580" cy="690" r="6" />
+        <circle class="ann-dot" cx="640" cy="705" r="6" />
+        <text class="ann-text" x="740" y="714">path: C 580,690</text>
+        <text class="ann-text" x="740" y="732">640,705  690,750</text>
+      </g>
+    </svg>
+
+    <h2>What changed from the initial drawing</h2>
+    <ul class="task-list">
+      <li>Roof rebuilt as a <code>path</code> with a trim line, plus a chimney with a curling smoke trail.</li>
+      <li>Windows redrawn with frames, crossbars and sills, defined once and placed twice with <code>&lt;use&gt;</code>.</li>
+      <li>Added a round attic window, door panels, a house number and a doorstep.</li>
+      <li>The two orange lines became a filled, winding garden path with stepping stones.</li>
+      <li>New garden features: fruit tree, mailbox, flower beds and a picket fence.</li>
+      <li>Sky detail: a sun with rotated rays, reusable clouds, birds, rolling hills and gradient sky and lawn.</li>
+      <li>Colours moved from inline <code>fill</code> attributes into CSS classes.</li>
+    </ul>
+
+    <h2>SVG features used</h2>
+    <table class="summary">
+      <thead><tr><th>Requirement</th><th>Where it appears</th></tr></thead>
+      <tbody>
+        <tr><td>Shapes</td><td><code>rect</code> (wall, door, chimney, trunk), <code>circle</code> (sun, canopy, apples, attic window), <code>ellipse</code> (clouds, petals, stepping stones), <code>line</code> (rays, window crossbars, flower stems)</td></tr>
+        <tr><td>Paths</td><td>Roof (<code>M L Z</code>), hills, smoke and garden path (cubic <code>C</code>), birds (relative quadratic <code>q</code>), mailbox (arc <code>A</code>), pickets</td></tr>
+        <tr><td>Text</td><td>"Home sweet home" label and the house number on the door</td></tr>
+        <tr><td>Grouping &amp; transforms</td><td><code>&lt;g&gt;</code> for the sun, tree and building; <code>translate</code> on the sun, tree, windows, clouds, birds, flowers and pickets; <code>scale</code> on the second cloud, a bird and some flowers; <code>rotate</code> on the sun's rays and flower petals</td></tr>
+        <tr><td>Styling</td><td>CSS classes in a <code>&lt;style&gt;</code> block, linear gradients, opacity, rounded line caps and joins, <code>currentColor</code> to recolour reused flowers</td></tr>
+      </tbody>
+    </table>
+
+    <p class="source">
+      Screenshots: <a href="screenshots/initial.png">initial</a> ·
+      <a href="screenshots/customised.png">customised</a> ·
+      <a href="screenshots/customised-annotated.png">customised with coordinates</a> ·
+      <a href="screenshots/initial-code.png">initial code</a> ·
+      <a href="code.html?file=house.html">view this page's source</a>
+    </p>
+  </main>
+
+  <script>
+    // Show or hide the coordinate layer. Adding ?annotate to the URL opens the page with it on.
+    const annotations = document.getElementById('annotations');
+    const toggle = document.getElementById('toggle-ann');
+
+    function setAnnotations(on) {
+      annotations.style.display = on ? '' : 'none';
+      toggle.textContent = on ? 'Hide coordinates' : 'Show coordinates';
+      toggle.setAttribute('aria-pressed', String(on));
+    }
+
+    setAnnotations(new URLSearchParams(location.search).has('annotate'));
+    toggle.addEventListener('click', () => setAnnotations(annotations.style.display === 'none'));
+  </script>
+  <script>
+    // ?bare hides everything but the drawing (used for the screenshots).
+    if (new URLSearchParams(location.search).has('bare')) document.body.classList.add('bare');
+  </script>
+</body>
+</html>

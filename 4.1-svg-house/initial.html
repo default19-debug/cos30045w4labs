@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>4.1 Initial SVG House</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <a href="../index.html">COS30045 Week 4 Lab</a>
+      <span class="crumb">Exercise 4.1 · Initial drawing</span>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <h1>Exercise 4.1 — Initial SVG house</h1>
+    <p class="lede">
+      The AI-generated starting point, before any customisation. It uses only basic shapes, two
+      stroked paths and one text label: no grouping, transforms or reusable parts. Compare it with the
+      <a href="house.html">customised house</a>.
+    </p>
+
+    <!-- ===== INITIAL SVG (unchanged starting code) ===== -->
+    <svg id="initial-house" viewBox="0 0 1000 750" width="100%" style="max-width:900px; border:1px solid #ccc">
+      <!-- Sky and ground -->
+      <rect x="0" y="0" width="1000" height="460" fill="skyblue" />
+      <rect x="0" y="460" width="1000" height="290" fill="green" />
+
+      <!-- Sun -->
+      <circle cx="820" cy="120" r="60" fill="yellow" />
+
+      <!-- Tree -->
+      <rect x="140" y="360" width="35" height="200" fill="sienna" />
+      <circle cx="132" cy="330" r="55" fill="forestgreen" />
+      <circle cx="187" cy="330" r="55" fill="forestgreen" />
+      <circle cx="158" cy="375" r="50" fill="forestgreen" />
+
+      <!-- House -->
+      <rect x="320" y="330" width="380" height="270" fill="saddlebrown" />
+      <polygon points="300,330 510,170 720,330" fill="peru" />
+      <rect x="360" y="380" width="80" height="70" fill="lightblue" />
+      <rect x="580" y="380" width="80" height="70" fill="lightblue" />
+      <rect x="470" y="470" width="80" height="130" fill="sienna" />
+      <circle cx="535" cy="540" r="7" fill="black" />
+
+      <!-- Path to the door -->
+      <path d="M 490 600 C 380 640, 330 690, 420 750" stroke="orange" stroke-width="8" fill="none" />
+      <path d="M 530 600 C 430 640, 400 690, 500 750" stroke="orange" stroke-width="8" fill="none" />
+
+      <!-- Label -->
+      <text x="760" y="420" font-family="sans-serif" font-size="40">House</text>
+    </svg>
+
+    <p class="source"><a href="code.html?file=initial.html">View this page's source</a></p>
+  </main>
+  <script>
+    // ?bare hides everything but the drawing (used for the screenshots).
+    if (new URLSearchParams(location.search).has('bare')) document.body.classList.add('bare');
+  </script>
+</body>
+</html>

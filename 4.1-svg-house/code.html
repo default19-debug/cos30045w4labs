@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>4.1 Source viewer</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    pre.code {
+      background: #1e2430; color: #e6e9ef; border-radius: 8px; padding: 1rem 0;
+      overflow-x: auto; line-height: 1.5; font-size: 0.85rem; counter-reset: line;
+    }
+    pre.code span { display: block; padding: 0 1rem 0 0; }
+    pre.code span::before {
+      counter-increment: line; content: counter(line);
+      display: inline-block; width: 3.2em; margin-right: 1em; padding-right: 0.6em;
+      text-align: right; color: #6b7686; border-right: 1px solid #39414f;
+    }
+    pre.code span.svg-line { background: rgba(255, 210, 63, 0.10); }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <a href="../index.html">COS30045 Week 4 Lab</a>
+      <span class="crumb">Exercise 4.1 · Source</span>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <h1 id="title">Source</h1>
+    <p class="lede">Highlighted lines are the SVG drawing itself.</p>
+    <pre class="code" id="code">Loading…</pre>
+  </main>
+
+  <script>
+    // Only files in this folder can be shown.
+    const allowed = ['initial.html', 'house.html'];
+    const requested = new URLSearchParams(location.search).get('file');
+    const file = allowed.includes(requested) ? requested : 'initial.html';
+    document.getElementById('title').textContent = 'Source of ' + file;
+
+    fetch(file)
+      .then(response => response.text())
+      .then(text => {
+        const pre = document.getElementById('code');
+        pre.textContent = '';
+        let inSvg = false;
+        text.split('\n').forEach(line => {
+          if (/<svg[\s>]/.test(line)) inSvg = true;
+          const span = document.createElement('span');
+          span.textContent = line || ' ';
+          if (inSvg) span.className = 'svg-line';
+          pre.appendChild(span);
+          if (/<\/svg>/.test(line)) inSvg = false;
+        });
+      })
+      .catch(() => {
+        document.getElementById('code').textContent =
+          'Could not load the file. Open this page through a local web server (e.g. Live Server).';
+      });
+  </script>
+</body>
+</html>
