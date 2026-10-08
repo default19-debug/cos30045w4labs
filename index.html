@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>COS30045 Week 4 Lab</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <a href="index.html">COS30045 Week 4 Lab</a>
+      <span class="crumb">SVGs and D3: data binding and bar charts</span>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <h1>Week 4 Lab — SVGs and D3</h1>
+    <p class="lede">
+      Six exercises, each kept as its own page so every step can be seen on its own. Exercise 4.1
+      draws an SVG by hand; 4.2 to 4.6 build a D3 bar chart step by step from television registration
+      data processed in KNIME.
+    </p>
+
+    <div class="exercise-grid">
+      <a class="exercise-card" href="4.1-svg-house/house.html">
+        <h3>4.1 SVG house and garden</h3>
+        <p>An initial drawing, then a customised one using shapes, paths, text, groups, transforms
+           and styling, with a switchable coordinate overlay.</p>
+      </a>
+      <a class="exercise-card" href="4.2-d3-elements/index.html">
+        <h3>4.2 Manipulate and add elements</h3>
+        <p>A separate JS file uses D3 to restyle existing elements and append paragraphs and SVG shapes.</p>
+      </a>
+      <a class="exercise-card" href="4.3-d3-setup/index.html">
+        <h3>4.3 D3 set up</h3>
+        <p>The 4.2 code removed; a responsive container, an SVG with a viewBox, and a test rectangle.</p>
+      </a>
+      <a class="exercise-card" href="4.4-load-csv/index.html">
+        <h3>4.4 Load data from CSV</h3>
+        <p><code>d3.csv()</code> with a row conversion function, the result in the console, and D3
+           summary functions.</p>
+      </a>
+      <a class="exercise-card" href="4.5-data-binding/index.html">
+        <h3>4.5 Binding and drawing with data</h3>
+        <p>One rectangle per brand via <code>selectAll().data().join()</code>, widths from the data,
+           bars spaced out.</p>
+      </a>
+      <a class="exercise-card" href="4.6-scales/index.html">
+        <h3>4.6 Scaling charts</h3>
+        <p>A linear scale for counts, a band scale with padding for brands, and labels.</p>
+      </a>
+    </div>
+
+    <h2>Data</h2>
+    <p class="lede">
+      <code>data/tvBrandCount.csv</code> — the number of television models per brand, produced by the
+      KNIME workflow <code>knime/2026 TV Data.knwf</code> from the Energy Rating register
+      (<code>tv_2026_02_15.csv</code>, data.gov.au): keep available models sold in Australia, lower-case
+      brand names, merge "samsung electronics" into "samsung", count models per brand, and keep brands
+      with 20 or more. 25 brands, 4,240 models.
+    </p>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">COS30045 Data Visualisation · Swinburne University of Technology</div>
+  </footer>
+</body>
+</html>

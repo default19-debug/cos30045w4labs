@@ -1,0 +1,9 @@
+# Reference images taken from the lecture slides (textbook figure and tutor's example)
+2025-02-07_12-03-07.png
+2026-03-05_12-02-45.png
+
+# OS and editor files
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
